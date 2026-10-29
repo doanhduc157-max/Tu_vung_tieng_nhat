@@ -3,118 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học Tiếng Nhật - Từ vựng & Keigo</title>
+    <title>Học Tiếng Nhật Chuyên Nghiệp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f4f7f6; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 20px; 
-            margin: 0;
-        }
-        h2 { color: #2c3e50; font-size: 1.5rem; text-align: center; margin-bottom: 30px; }
-        .card-container { 
-            perspective: 1000px; 
-            width: 320px; 
-            height: 220px; 
-            cursor: pointer; 
-        }
-        .card { 
-            width: 100%; 
-            height: 100%; 
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); 
-            transform-style: preserve-3d; 
-            position: relative; 
-        }
-        .card.flip { transform: rotateY(180deg); }
-        .card-face { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            backface-visibility: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .card-front { background-color: #ffffff; color: #333; }
-        .card-back { background-color: #2c3e50; color: white; transform: rotateY(180deg); }
-        .kanji { font-size: 2.2rem; font-weight: bold; margin-bottom: 10px; }
-        .romaji { font-size: 1.1rem; color: #7f8c8d; }
-        .vi-meaning { font-size: 1.2rem; line-height: 1.5; }
-        .controls { display: flex; gap: 15px; margin-top: 30px; }
-        button { 
-            padding: 10px 25px; 
-            border: none; 
-            border-radius: 8px; 
-            background-color: #3498db; 
-            color: white; 
-            cursor: pointer; 
-            font-size: 1rem; 
-            transition: background 0.3s;
-        }
-        button:hover { background-color: #2980b9; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .font-jp { font-family: 'Noto Sans JP', sans-serif; }
+        html { scroll-behavior: smooth; }
+        .hide-meaning .meaning-text { filter: blur(4px); transition: filter 0.3s; }
+        .hide-meaning .meaning-text:hover { filter: blur(0); }
+        .quiz-option { cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { transform: translateY(-2px); }
+        .quiz-option.correct { background-color: #dcfce7; border-color: #22c55e; color: #166534; }
+        .quiz-option.wrong { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; }
     </style>
 </head>
-<body>
+<body class="text-gray-800">
 
-    <h2>Luyện Tập Từ Vựng & Kính Ngữ (Keigo)</h2>
-    
-    <div class="card-container" onclick="flipCard()">
-        <div class="card" id="flashcard">
-            <div class="card-face card-front">
-                <div class="kanji" id="jp-text">拝見する</div>
-                <div class="romaji" id="reading">はいけんする (Haiken suru)</div>
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="font-bold text-2xl text-indigo-900 flex items-center gap-2 tracking-tight">
+                <div class="bg-indigo-900 text-white w-8 h-8 rounded flex items-center justify-center text-sm font-jp">日</div>
+                Học Tiếng Nhật
             </div>
-            <div class="card-face card-back">
-                <div class="vi-meaning" id="vi-text">Xem, nhìn<br><br><small>(Khiêm nhường ngữ của 見る)</small></div>
+            <div class="hidden md:flex gap-8">
+                <a href="#" class="hover:text-pink-500 font-medium transition-colors text-gray-600">Trang chủ</a>
+                <a href="#vocab" class="hover:text-pink-500 font-medium transition-colors text-gray-600">Từ vựng</a>
+                <a href="#grammar" class="hover:text-pink-500 font-medium transition-colors text-gray-600">Ngữ pháp</a>
+                <a href="#kanji" class="hover:text-pink-500 font-medium transition-colors text-gray-600">Học Kanji</a>
             </div>
+            <button class="bg-indigo-900 hover:bg-indigo-800 text-white px-6 py-2 rounded-full font-medium transition-all shadow-md hidden md:block">
+                Bắt đầu học
+            </button>
+            <button class="md:hidden text-gray-500 text-xl"><i class="fas fa-bars"></i></button>
         </div>
-    </div>
+    </nav>
 
-    <div class="controls">
-        <button onclick="prevCard()">Trước</button>
-        <button onclick="nextCard()">Tiếp theo</button>
-    </div>
+    <!-- Hero Section -->
+    <header class="bg-white py-16 md:py-24 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none"></div>
+        <div class="relative z-10 px-4 max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-indigo-950 leading-tight">
+                Chinh phục Tiếng Nhật <br/><span class="text-pink-500">dễ dàng hơn bao giờ hết</span>
+            </h1>
+            <p class="text-gray-500 mb-10 text-lg md:text-xl max-w-2xl mx-auto">
+                Hệ thống học tập chuyên nghiệp, giao diện trực quan và bám sát giáo trình Minna no Nihongo giúp bạn đạt JLPT nhanh chóng.
+            </p>
+        </div>
+    </header>
 
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        
+        <!-- ================= TỪ VỰNG ================= -->
+        <section id="vocab" class="mb-24 pt-10">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-indigo-900 mb-3">Hệ thống Từ Vựng (語彙)</h2>
+                <p class="text-gray-500 max-w-xl mx-auto">Xây dựng nền tảng từ vựng vững chắc theo từng cấp độ JLPT với phương pháp học tập khoa học và trực quan.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- N5 Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button onclick="toggleVocabN5()" class="w-full px-6 py-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center gap-5">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                <i class="fas fa-seedling text-2xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <span class="block font-bold text-xl text-gray-800">Sơ cấp (N5)</span>
+                                <span class="text-sm text-gray-500 font-medium mt-1">25 Bài Minna no Nihongo</span>
+                            </div>
+                        </div>
+                        <i id="vocab-n5-icon" class="fas fa-chevron-down text-gray-300 text-xl transition-transform duration-300"></i>
+                    </button>
+                    
+                    <div id="vocab-n5-content" class="hidden border-t border-gray-50 bg-gray-50/30">
+                        <!-- Toolbar -->
+                        <div class="p-4 border-b border-gray-100 flex flex-wrap gap-4 justify-between items-center bg-white sticky top-[68px] z-40">
+                            <div class="relative w-full md:w-64">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" id="vocab-search" placeholder="Tìm từ vựng..." class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:border-indigo-300 text-sm" onkeyup="filterVocab()">
+                            </div>
+                            <button onclick="toggleMeaning()" id="toggle-meaning-btn" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-100 transition">
+                                <i class="fas fa-eye-slash mr-2"></i> Ẩn nghĩa tiếng Việt
+                            </button>
+                        </div>
+                        
+                        <!-- List Lessons -->
+                        <div class="p-4 md:p-6" id="vocab-lessons-container">
+                            <!-- JS will generate lessons here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- N4 Card (Locked) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-6 flex justify-between items-center opacity-70">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
+                            <i class="fas fa-leaf text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="block font-bold text-xl text-gray-700">Sơ trung cấp (N4)</span>
+                            <span class="text-sm text-gray-400 font-medium mt-1">Sẽ sớm ra mắt</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-lock text-gray-300"></i>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= NGỮ PHÁP ================= -->
+        <section id="grammar" class="mb-20 pt-10">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-indigo-900 mb-3">Hệ thống Ngữ pháp (文法)</h2>
+                <p class="text-gray-500 max-w-xl mx-auto">Nắm vững cấu trúc câu, cách chia động từ và ứng dụng thực tế qua từng bài học chi tiết.</p>
+            </div>
+
+            <!-- N5 Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button onclick="toggleGrammarN5()" class="w-full px-6 py-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-50 flex items-center justify-center text-pink-500">
+                            <i class="fas fa-layer-group text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <span class="block font-bold text-xl text-gray-800">Ngữ pháp N5</span>
+                            <span class="text-sm text-gray-500 font-medium mt-1">25 Bài Minna no Nihongo</span>
+                        </div>
+                    </div>
+                    <i id="grammar-n5-icon" class="fas fa-chevron-down text-gray-300 text-xl transition-transform duration-300"></i>
+                </button>
+                
+                <div id="grammar-n5-content" class="hidden border-t border-gray-50">
+                    <div class="flex flex-col md:flex-row h-auto md:h-[800px]">
+                        <!-- Sidebar: Danh sách bài -->
+                        <div class="w-full md:w-64 bg-gray-50/50 border-r border-gray-100 overflow-y-auto p-4 custom-scrollbar flex-shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-x-hidden" id="grammar-sidebar">
+                            <!-- JS sinh danh sách nút bài học -->
+                        </div>
+                        
+                        <!-- Main Content: Chi tiết ngữ pháp -->
+                        <div class="flex-1 bg-white relative overflow-y-auto custom-scrollbar">
+                            <div id="grammar-detail-content" class="p-6 md:p-10">
+                                <div class="text-center text-gray-400 mt-20 flex flex-col items-center">
+                                    <i class="fas fa-book-reader text-5xl mb-4 text-gray-200"></i>
+                                    <p>Vui lòng chọn bài học ở danh sách để bắt đầu.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center mt-20 text-sm">
+        <p>© 2026 Học Tiếng Nhật. Giao diện cao cấp đã được khôi phục.</p>
+    </footer>
+
+    <!-- ================= LOGIC & DỮ LIỆU ================= -->
     <script>
-        const vocab = [
-            { jp: "拝見する", reading: "はいけんする", vi: "Xem, nhìn<br><br><small>(Khiêm nhường ngữ của 見る)</small>" },
-            { jp: "申し上げる", reading: "もうしあげる", vi: "Nói, trình bày<br><br><small>(Khiêm nhường ngữ của 言う)</small>" },
-            { jp: "伺う", reading: "うかがう", vi: "Hỏi, nghe, đến thăm<br><br><small>(Khiêm nhường ngữ)</small>" },
-            { jp: "存じております", reading: "ぞんじております", vi: "Biết<br><br><small>(Khiêm nhường ngữ của 知っている)</small>" },
-            { jp: "おっしゃる", reading: "おっしゃる", vi: "Nói<br><br><small>(Tôn kính ngữ của 言う)</small>" },
-            { jp: "一花", reading: "いっか (Ikka)", vi: "Một bông hoa / Thành công rực rỡ" }
-        ];
+        // --- CƠ SỞ DỮ LIỆU TỪ VỰNG ---
+        const vocabDB = {
+            1: [
+                { kanji: '私', hiragana: 'わたし', romaji: 'watashi', meaning: 'Tôi', type: 'Đại từ' },
+                { kanji: '私たち', hiragana: 'わたしたち', romaji: 'watashitachi', meaning: 'Chúng tôi, chúng ta', type: 'Đại từ' },
+                { kanji: 'あなた', hiragana: 'あなた', romaji: 'anata', meaning: 'Bạn, anh, chị', type: 'Đại từ' },
+                { kanji: 'あの人', hiragana: 'あのひと', romaji: 'ano hito', meaning: 'Người kia', type: 'Danh từ' },
+                { kanji: 'あの方', hiragana: 'あのかた', romaji: 'ano kata', meaning: 'Vị kia (lịch sự)', type: 'Danh từ' },
+                { kanji: '皆さん', hiragana: 'みなさん', romaji: 'minasan', meaning: 'Mọi người, các bạn', type: 'Danh từ' },
+                { kanji: '～さん', hiragana: '～さん', romaji: '~san', meaning: 'Hậu tố gọi tên lịch sự', type: 'Hậu tố' },
+                { kanji: '～ちゃん', hiragana: '～ちゃん', romaji: '~chan', meaning: 'Hậu tố gọi thân mật', type: 'Hậu tố' },
+                { kanji: '～人', hiragana: '～じん', romaji: '~jin', meaning: 'Người nước…', type: 'Hậu tố' },
+                { kanji: '先生', hiragana: 'せんせい', romaji: 'sensei', meaning: 'Thầy, cô; giáo viên', type: 'Danh từ' },
+                { kanji: '教師', hiragana: 'きょうし', romaji: 'kyoushi', meaning: 'Giáo viên (nghề nghiệp bản thân)', type: 'Danh từ' },
+                { kanji: '学生', hiragana: 'がくせい', romaji: 'gakusei', meaning: 'Học sinh, sinh viên', type: 'Danh từ' },
+                { kanji: '会社員', hiragana: 'かいしゃいん', romaji: 'kaishain', meaning: 'Nhân viên công ty', type: 'Danh từ' },
+                { kanji: '社員', hiragana: 'しゃいん', romaji: 'shain', meaning: 'Nhân viên công ty', type: 'Danh từ' },
+                { kanji: '銀行員', hiragana: 'ぎんこういん', romaji: 'ginkouin', meaning: 'Nhân viên ngân hàng', type: 'Danh từ' },
+                { kanji: '医者', hiragana: 'いしゃ', romaji: 'isha', meaning: 'Bác sĩ', type: 'Danh từ' },
+                { kanji: '研究者', hiragana: 'けんきゅうしゃ', romaji: 'kenkyuusha', meaning: 'Nhà nghiên cứu', type: 'Danh từ' },
+                { kanji: 'エンジニア', hiragana: 'エンジニア', romaji: 'enjinia', meaning: 'Kỹ sư', type: 'Danh từ' },
+                { kanji: '大学', hiragana: 'だいがく', romaji: 'daigaku', meaning: 'Trường đại học', type: 'Danh từ' },
+                { kanji: '病院', hiragana: 'びょういん', romaji: 'byouin', meaning: 'Bệnh viện', type: 'Danh từ' },
+                { kanji: '電気', hiragana: 'でんき', romaji: 'denki', meaning: 'Điện', type: 'Danh từ' },
+                { kanji: '誰', hiragana: 'だれ', romaji: 'dare', meaning: 'Ai', type: 'Đại từ nghi vấn' },
+                { kanji: 'どなた', hiragana: 'どなた', romaji: 'donata', meaning: 'Ai (lịch sự)', type: 'Đại từ nghi vấn' },
+                { kanji: '～歳', hiragana: '～さい', romaji: '~sai', meaning: '… tuổi', type: 'Hậu tố đếm tuổi' },
+                { kanji: '何歳', hiragana: 'なんさい', romaji: 'nansai', meaning: 'Bao nhiêu tuổi', type: 'Từ nghi vấn' },
+                { kanji: 'おいくつ', hiragana: 'おいくつ', romaji: 'oikutsu', meaning: 'Bao nhiêu tuổi (lịch sự)', type: 'Từ nghi vấn' },
+                { kanji: 'はい', hiragana: 'はい', romaji: 'hai', meaning: 'Vâng, đúng', type: 'Từ đáp' },
+                { kanji: 'いいえ', hiragana: 'いいえ', romaji: 'iie', meaning: 'Không', type: 'Từ đáp' },
+                { kanji: '初めまして', hiragana: 'はじめまして', romaji: 'hajimemashite', meaning: 'Rất vui được gặp bạn lần đầu', type: 'Cụm từ giao tiếp' },
+                { kanji: 'どうぞよろしくお願いします', hiragana: 'どうぞよろしくおねがいします', romaji: 'douzo yoroshiku onegaishimasu', meaning: 'Rất mong được giúp đỡ', type: 'Cụm từ giao tiếp' },
+                { kanji: 'こちらは～さんです', hiragana: 'こちらは～さんです', romaji: 'kochira wa ~san desu', meaning: 'Đây là anh/chị…', type: 'Cụm từ giao tiếp' },
+                { kanji: '～から来ました', hiragana: '～からきました', romaji: '~kara kimashita', meaning: 'Đến từ…', type: 'Cụm từ giao tiếp' },
+                { kanji: 'アメリカ', hiragana: 'アメリカ', romaji: 'amerika', meaning: 'Mỹ', type: 'Danh từ riêng' },
+                { kanji: 'イギリス', hiragana: 'イギリス', romaji: 'igirisu', meaning: 'Vương quốc Anh', type: 'Danh từ riêng' },
+                { kanji: 'インド', hiragana: 'インド', romaji: 'indo', meaning: 'Ấn Độ', type: 'Danh từ riêng' },
+                { kanji: 'インドネシア', hiragana: 'インドネシア', romaji: 'indoneshia', meaning: 'Indonesia', type: 'Danh từ riêng' },
+                { kanji: '韓国', hiragana: 'かんこく', romaji: 'kankoku', meaning: 'Hàn Quốc', type: 'Danh từ riêng' },
+                { kanji: 'タイ', hiragana: 'タイ', romaji: 'tai', meaning: 'Thái Lan', type: 'Danh từ riêng' },
+                { kanji: '中国', hiragana: 'ちゅうごく', romaji: 'chuugoku', meaning: 'Trung Quốc', type: 'Danh từ riêng' },
+                { kanji: 'ドイツ', hiragana: 'ドイツ', romaji: 'doitsu', meaning: 'Đức', type: 'Danh từ riêng' },
+                { kanji: '日本', hiragana: 'にほん', romaji: 'nihon', meaning: 'Nhật Bản', type: 'Danh từ riêng' },
+                { kanji: 'フランス', hiragana: 'フランス', romaji: 'furansu', meaning: 'Pháp', type: 'Danh từ riêng' },
+                { kanji: 'ブラジル', hiragana: 'ブラジル', romaji: 'burajiru', meaning: 'Brazil', type: 'Danh từ riêng' },
+                { kanji: 'ベトナム', hiragana: 'ベトナム', romaji: 'betonamu', meaning: 'Việt Nam', type: 'Danh từ riêng' },
+                { kanji: '日本人', hiragana: 'にほんじん', romaji: 'nihonjin', meaning: 'Người Nhật', type: 'Danh từ' },
+                { kanji: 'ベトナム人', hiragana: 'ベトナムじん', romaji: 'betonamujin', meaning: 'Người Việt Nam', type: 'Danh từ' }
+            ],
+            21: [
+                { kanji: '思います', hiragana: 'おもいます', romaji: 'omoimasu', meaning: 'Nghĩ', type: 'Động từ' },
+                { kanji: '言います', hiragana: 'いいます', romaji: 'iimasu', meaning: 'Nói', type: 'Động từ' },
+                { kanji: '足ります', hiragana: 'たります', romaji: 'tarimasu', meaning: 'Đủ', type: 'Động từ' }
+            ]
+        };
+        // Điền dữ liệu rỗng cho các bài khác để không bị lỗi
+        for(let i=1; i<=25; i++) { if(!vocabDB[i]) vocabDB[i] = []; }
 
-        let currentIndex = 0;
+        // --- CƠ SỞ DỮ LIỆU NGỮ PHÁP (Rút gọn để biểu diễn UI) ---
+        const grammarDB = {
+            1: [
+                {
+                    title: "1. N1 は N2 です",
+                    formula: "Danh từ 1 + は + Danh từ 2 + です",
+                    meaning: "N1 là N2",
+                    usage: "Trợ từ は biểu thị chủ đề của câu. です thể hiện sự khẳng định và lịch sự.",
+                    examples: [
+                        { jp: "私<ruby>は<rt>わたしは</rt></ruby> 学生<ruby>です<rt>がくせいです</rt></ruby>。", vi: "Tôi là học sinh." }
+                    ]
+                }
+            ],
+            21: [
+                {
+                    title: "1. ～と思います",
+                    formula: "Thể thông thường + と思います",
+                    meaning: "Tôi nghĩ rằng ~",
+                    usage: "Dùng để bày tỏ ý kiến, phỏng đoán của người nói.",
+                    examples: [
+                        { jp: "明日<ruby>雨<rt>あめ</rt></ruby>が<ruby>降る<rt>ふる</rt></ruby>と<ruby>思います<rt>おもいます</rt></ruby>。", vi: "Tôi nghĩ ngày mai trời sẽ mưa." }
+                    ]
+                }
+            ]
+        };
+        for(let i=1; i<=25; i++) { if(!grammarDB[i]) grammarDB[i] = []; }
 
-        function updateCard() {
-            document.getElementById('jp-text').innerHTML = vocab[currentIndex].jp;
-            document.getElementById('reading').innerHTML = vocab[currentIndex].reading;
-            document.getElementById('vi-text').innerHTML = vocab[currentIndex].vi;
-            document.getElementById('flashcard').classList.remove('flip');
+        let isMeaningHidden = false;
+
+        // --- TỪ VỰNG LOGIC ---
+        function toggleVocabN5() {
+            const content = document.getElementById('vocab-n5-content');
+            const icon = document.getElementById('vocab-n5-icon');
+            const container = document.getElementById('vocab-lessons-container');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+                
+                // Render if empty
+                if (container.children.length === 0) {
+                    renderAllVocabLessons();
+                }
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
         }
 
-        function flipCard() {
-            document.getElementById('flashcard').classList.toggle('flip');
+        function renderAllVocabLessons() {
+            const container = document.getElementById('vocab-lessons-container');
+            let html = '';
+            for(let i = 1; i <= 25; i++) {
+                html += `
+                <div class="vocab-lesson-item bg-white border border-gray-200 rounded-xl overflow-hidden mb-4 shadow-sm" data-lesson="${i}">
+                    <button class="w-full px-5 py-4 flex items-center justify-between bg-white hover:bg-gray-50 transition-all" onclick="toggleVocabLesson(this)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-bold">${i}</span>
+                            <span class="font-bold text-gray-800">Bài ${i}</span>
+                        </div>
+                        <i class="fas fa-plus text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="lesson-content hidden border-t border-gray-100 p-0">
+                        ${generateVocabTableHTML(i)}
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
         }
 
-        function nextCard() {
-            currentIndex = (currentIndex + 1) % vocab.length;
-            updateCard();
+        function generateVocabTableHTML(lessonNum) {
+            const data = vocabDB[lessonNum];
+            if(!data || data.length === 0) {
+                return `<div class="p-6 text-center text-gray-400 italic">Dữ liệu bài ${lessonNum} đang cập nhật...</div>`;
+            }
+            let rows = data.map(v => `
+                <tr class="vocab-row border-b border-gray-50 hover:bg-indigo-50/30 transition-colors">
+                    <td class="py-3 px-4 font-jp text-lg font-medium text-gray-900">${v.kanji || '-'}</td>
+                    <td class="py-3 px-4 font-jp text-gray-600">${v.hiragana}</td>
+                    <td class="py-3 px-4 text-gray-500 text-sm hidden md:table-cell">${v.romaji}</td>
+                    <td class="py-3 px-4 text-gray-800 meaning-col"><span class="meaning-text">${v.meaning}</span></td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="overflow-x-auto ${isMeaningHidden ? 'hide-meaning' : ''}">
+                    <table class="w-full text-left border-collapse min-w-[500px]">
+                        <thead class="bg-gray-50/50">
+                            <tr class="text-gray-400 uppercase text-xs tracking-wider">
+                                <th class="py-3 px-4 font-medium">Kanji</th>
+                                <th class="py-3 px-4 font-medium">Hiragana</th>
+                                <th class="py-3 px-4 font-medium hidden md:table-cell">Romaji</th>
+                                <th class="py-3 px-4 font-medium">Ý nghĩa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">${rows}</tbody>
+                    </table>
+                </div>
+            `;
         }
 
-        function prevCard() {
-            currentIndex = (currentIndex - 1 + vocab.length) % vocab.length;
-            updateCard();
+        function toggleVocabLesson(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('i');
+            content.classList.toggle('hidden');
+            if(content.classList.contains('hidden')) {
+                icon.classList.remove('fa-minus', 'text-indigo-500');
+                icon.classList.add('fa-plus', 'text-gray-400');
+            } else {
+                icon.classList.remove('fa-plus', 'text-gray-400');
+                icon.classList.add('fa-minus', 'text-indigo-500');
+            }
+        }
+
+        function filterVocab() {
+            const query = document.getElementById('vocab-search').value.toLowerCase();
+            const rows = document.querySelectorAll('.vocab-row');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        function toggleMeaning() {
+            isMeaningHidden = !isMeaningHidden;
+            const btn = document.getElementById('toggle-meaning-btn');
+            const tables = document.querySelectorAll('#vocab-lessons-container .overflow-x-auto');
+            
+            if(isMeaningHidden) {
+                btn.innerHTML = '<i class="fas fa-eye mr-2"></i> Hiện nghĩa tiếng Việt';
+                btn.classList.add('bg-pink-100', 'text-pink-600');
+                btn.classList.remove('bg-indigo-50', 'text-indigo-600');
+                tables.forEach(t => t.classList.add('hide-meaning'));
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i> Ẩn nghĩa tiếng Việt';
+                btn.classList.remove('bg-pink-100', 'text-pink-600');
+                btn.classList.add('bg-indigo-50', 'text-indigo-600');
+                tables.forEach(t => t.classList.remove('hide-meaning'));
+            }
+        }
+
+        // --- NGỮ PHÁP LOGIC ---
+        function toggleGrammarN5() {
+            const content = document.getElementById('grammar-n5-content');
+            const icon = document.getElementById('grammar-n5-icon');
+            const sidebar = document.getElementById('grammar-sidebar');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+                
+                if (sidebar.children.length === 0) {
+                    let html = '';
+                    for(let i=1; i<=25; i++) {
+                        html += `
+                        <button onclick="loadGrammarLesson(${i})" id="gram-btn-${i}" class="text-left px-4 py-3 rounded-xl hover:bg-pink-50 transition-colors flex items-center justify-between whitespace-nowrap md:whitespace-normal group border border-transparent">
+                            <span class="font-medium text-gray-700 group-hover:text-pink-600 transition-colors">Bài ${i}</span>
+                            <i class="fas fa-chevron-right text-xs text-gray-300 opacity-0 group-hover:opacity-100 hidden md:block"></i>
+                        </button>`;
+                    }
+                    sidebar.innerHTML = html;
+                }
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function loadGrammarLesson(lessonNum) {
+            // Update active state in sidebar
+            document.querySelectorAll('#grammar-sidebar button').forEach(b => {
+                b.classList.remove('bg-white', 'border-pink-100', 'shadow-sm', 'text-pink-600');
+                b.classList.add('text-gray-700');
+            });
+            const activeBtn = document.getElementById(`gram-btn-${lessonNum}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-white', 'border-pink-100', 'shadow-sm', 'text-pink-600');
+                activeBtn.classList.remove('text-gray-700');
+            }
+
+            const container = document.getElementById('grammar-detail-content');
+            const data = grammarDB[lessonNum];
+            
+            if(!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-gray-400 py-20">
+                        <i class="fas fa-tools text-5xl mb-4 text-gray-200"></i>
+                        <h3 class="text-xl font-bold text-gray-600 mb-2">Bài ${lessonNum}</h3>
+                        <p>Nội dung đang được biên soạn và sẽ sớm ra mắt.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="flex justify-between items-end mb-8 border-b border-gray-100 pb-4">
+                    <div>
+                        <span class="text-pink-500 font-bold tracking-wider text-sm uppercase">Minna no Nihongo</span>
+                        <h3 class="text-3xl font-bold text-indigo-950 mt-1">Ngữ pháp Bài ${lessonNum}</h3>
+                    </div>
+                </div>
+            `;
+
+            html += data.map(grammar => `
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 mb-6 shadow-sm hover:shadow-md transition-shadow">
+                    <h4 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-3">
+                        <span class="w-2 h-6 bg-pink-500 rounded-full inline-block"></span>
+                        ${grammar.title}
+                    </h4>
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5 font-mono text-center text-lg text-indigo-800 font-semibold shadow-inner">
+                        ${grammar.formula}
+                    </div>
+                    <div class="space-y-3 mb-6">
+                        <p><span class="font-bold text-gray-700 w-24 inline-block bg-gray-100 px-2 py-1 rounded text-sm text-center mr-2">Ý nghĩa</span> ${grammar.meaning}</p>
+                        <p class="text-gray-600 leading-relaxed"><span class="font-bold text-gray-700 w-24 inline-block bg-gray-100 px-2 py-1 rounded text-sm text-center mr-2">Cách dùng</span> ${grammar.usage}</p>
+                    </div>
+                    
+                    <div class="bg-indigo-50/50 rounded-xl p-5 border border-indigo-100">
+                        <p class="font-bold text-indigo-900 mb-4 text-sm uppercase tracking-wide flex items-center gap-2"><i class="fas fa-lightbulb text-yellow-500"></i> Ví dụ minh họa</p>
+                        <div class="space-y-4">
+                            ${grammar.examples.map(ex => `
+                                <div class="bg-white p-4 rounded-lg shadow-sm border border-white">
+                                    <p class="font-jp text-xl text-gray-900 mb-1">${ex.jp}</p>
+                                    <p class="text-gray-500 text-sm">👉 ${ex.vi}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
         }
     </script>
 </body>
