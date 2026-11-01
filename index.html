@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -13,10 +14,6 @@
         html { scroll-behavior: smooth; }
         .hide-meaning .meaning-text { filter: blur(4px); transition: filter 0.3s; }
         .hide-meaning .meaning-text:hover { filter: blur(0); }
-        .quiz-option { cursor: pointer; transition: all 0.2s; }
-        .quiz-option:hover { transform: translateY(-2px); }
-        .quiz-option.correct { background-color: #dcfce7; border-color: #22c55e; color: #166534; }
-        .quiz-option.wrong { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -161,303 +158,99 @@
     </main>
 
     <footer class="bg-gray-900 text-gray-400 py-8 text-center mt-20 text-sm">
-        <p>© 2026 Học Tiếng Nhật. Giao diện cao cấp đã được khôi phục.</p>
+        <p>© 2026 Học Tiếng Nhật. Giao diện chuẩn đã được khôi phục.</p>
     </footer>
 
     <!-- ================= LOGIC & DỮ LIỆU ================= -->
     <script>
-        // --- CƠ SỞ DỮ LIỆU TỪ VỰNG ---
         const vocabDB = {
             1: [
-                { kanji: '私', hiragana: 'わたし', romaji: 'watashi', meaning: 'Tôi', type: 'Đại từ' },
-                { kanji: '私たち', hiragana: 'わたしたち', romaji: 'watashitachi', meaning: 'Chúng tôi, chúng ta', type: 'Đại từ' },
-                { kanji: 'あなた', hiragana: 'あなた', romaji: 'anata', meaning: 'Bạn, anh, chị', type: 'Đại từ' },
-                { kanji: 'あの人', hiragana: 'あのひと', romaji: 'ano hito', meaning: 'Người kia', type: 'Danh từ' },
-                { kanji: 'あの方', hiragana: 'あのかた', romaji: 'ano kata', meaning: 'Vị kia (lịch sự)', type: 'Danh từ' },
-                { kanji: '皆さん', hiragana: 'みなさん', romaji: 'minasan', meaning: 'Mọi người, các bạn', type: 'Danh từ' },
-                { kanji: '～さん', hiragana: '～さん', romaji: '~san', meaning: 'Hậu tố gọi tên lịch sự', type: 'Hậu tố' },
-                { kanji: '～ちゃん', hiragana: '～ちゃん', romaji: '~chan', meaning: 'Hậu tố gọi thân mật', type: 'Hậu tố' },
-                { kanji: '～人', hiragana: '～じん', romaji: '~jin', meaning: 'Người nước…', type: 'Hậu tố' },
-                { kanji: '先生', hiragana: 'せんせい', romaji: 'sensei', meaning: 'Thầy, cô; giáo viên', type: 'Danh từ' },
-                { kanji: '教師', hiragana: 'きょうし', romaji: 'kyoushi', meaning: 'Giáo viên (nghề nghiệp bản thân)', type: 'Danh từ' },
-                { kanji: '学生', hiragana: 'がくせい', romaji: 'gakusei', meaning: 'Học sinh, sinh viên', type: 'Danh từ' },
-                { kanji: '会社員', hiragana: 'かいしゃいん', romaji: 'kaishain', meaning: 'Nhân viên công ty', type: 'Danh từ' },
-                { kanji: '社員', hiragana: 'しゃいん', romaji: 'shain', meaning: 'Nhân viên công ty', type: 'Danh từ' },
-                { kanji: '銀行員', hiragana: 'ぎんこういん', romaji: 'ginkouin', meaning: 'Nhân viên ngân hàng', type: 'Danh từ' },
-                { kanji: '医者', hiragana: 'いしゃ', romaji: 'isha', meaning: 'Bác sĩ', type: 'Danh từ' },
-                { kanji: '研究者', hiragana: 'けんきゅうしゃ', romaji: 'kenkyuusha', meaning: 'Nhà nghiên cứu', type: 'Danh từ' },
-                { kanji: 'エンジニア', hiragana: 'エンジニア', romaji: 'enjinia', meaning: 'Kỹ sư', type: 'Danh từ' },
-                { kanji: '大学', hiragana: 'だいがく', romaji: 'daigaku', meaning: 'Trường đại học', type: 'Danh từ' },
-                { kanji: '病院', hiragana: 'びょういん', romaji: 'byouin', meaning: 'Bệnh viện', type: 'Danh từ' },
-                { kanji: '電気', hiragana: 'でんき', romaji: 'denki', meaning: 'Điện', type: 'Danh từ' },
-                { kanji: '誰', hiragana: 'だれ', romaji: 'dare', meaning: 'Ai', type: 'Đại từ nghi vấn' },
-                { kanji: 'どなた', hiragana: 'どなた', romaji: 'donata', meaning: 'Ai (lịch sự)', type: 'Đại từ nghi vấn' },
-                { kanji: '～歳', hiragana: '～さい', romaji: '~sai', meaning: '… tuổi', type: 'Hậu tố đếm tuổi' },
-                { kanji: '何歳', hiragana: 'なんさい', romaji: 'nansai', meaning: 'Bao nhiêu tuổi', type: 'Từ nghi vấn' },
-                { kanji: 'おいくつ', hiragana: 'おいくつ', romaji: 'oikutsu', meaning: 'Bao nhiêu tuổi (lịch sự)', type: 'Từ nghi vấn' },
-                { kanji: 'はい', hiragana: 'はい', romaji: 'hai', meaning: 'Vâng, đúng', type: 'Từ đáp' },
-                { kanji: 'いいえ', hiragana: 'いいえ', romaji: 'iie', meaning: 'Không', type: 'Từ đáp' },
-                { kanji: '初めまして', hiragana: 'はじめまして', romaji: 'hajimemashite', meaning: 'Rất vui được gặp bạn lần đầu', type: 'Cụm từ giao tiếp' },
-                { kanji: 'どうぞよろしくお願いします', hiragana: 'どうぞよろしくおねがいします', romaji: 'douzo yoroshiku onegaishimasu', meaning: 'Rất mong được giúp đỡ', type: 'Cụm từ giao tiếp' },
-                { kanji: 'こちらは～さんです', hiragana: 'こちらは～さんです', romaji: 'kochira wa ~san desu', meaning: 'Đây là anh/chị…', type: 'Cụm từ giao tiếp' },
-                { kanji: '～から来ました', hiragana: '～からきました', romaji: '~kara kimashita', meaning: 'Đến từ…', type: 'Cụm từ giao tiếp' },
-                { kanji: 'アメリカ', hiragana: 'アメリカ', romaji: 'amerika', meaning: 'Mỹ', type: 'Danh từ riêng' },
-                { kanji: 'イギリス', hiragana: 'イギリス', romaji: 'igirisu', meaning: 'Vương quốc Anh', type: 'Danh từ riêng' },
-                { kanji: 'インド', hiragana: 'インド', romaji: 'indo', meaning: 'Ấn Độ', type: 'Danh từ riêng' },
-                { kanji: 'インドネシア', hiragana: 'インドネシア', romaji: 'indoneshia', meaning: 'Indonesia', type: 'Danh từ riêng' },
-                { kanji: '韓国', hiragana: 'かんこく', romaji: 'kankoku', meaning: 'Hàn Quốc', type: 'Danh từ riêng' },
-                { kanji: 'タイ', hiragana: 'タイ', romaji: 'tai', meaning: 'Thái Lan', type: 'Danh từ riêng' },
-                { kanji: '中国', hiragana: 'ちゅうごく', romaji: 'chuugoku', meaning: 'Trung Quốc', type: 'Danh từ riêng' },
-                { kanji: 'ドイツ', hiragana: 'ドイツ', romaji: 'doitsu', meaning: 'Đức', type: 'Danh từ riêng' },
-                { kanji: '日本', hiragana: 'にほん', romaji: 'nihon', meaning: 'Nhật Bản', type: 'Danh từ riêng' },
-                { kanji: 'フランス', hiragana: 'フランス', romaji: 'furansu', meaning: 'Pháp', type: 'Danh từ riêng' },
-                { kanji: 'ブラジル', hiragana: 'ブラジル', romaji: 'burajiru', meaning: 'Brazil', type: 'Danh từ riêng' },
-                { kanji: 'ベトナム', hiragana: 'ベトナム', romaji: 'betonamu', meaning: 'Việt Nam', type: 'Danh từ riêng' },
-                { kanji: '日本人', hiragana: 'にほんじん', romaji: 'nihonjin', meaning: 'Người Nhật', type: 'Danh từ' },
-                { kanji: 'ベトナム人', hiragana: 'ベトナムじん', romaji: 'betonamujin', meaning: 'Người Việt Nam', type: 'Danh từ' }
+                { kanji: "私", hiragana: "わたし", romaji: "watashi", meaning: "Tôi", type: "Đại từ" },
+                { kanji: "私たち", hiragana: "わたしたち", romaji: "watashitachi", meaning: "Chúng tôi, chúng ta", type: "Đại từ" },
+                { kanji: "あなた", hiragana: "あなた", romaji: "anata", meaning: "Bạn, anh, chị", type: "Đại từ" },
+                { kanji: "あの人", hiragana: "あのひと", romaji: "ano hito", meaning: "Người kia", type: "Danh từ" },
+                { kanji: "あの方", hiragana: "あのかた", romaji: "ano kata", meaning: "Vị kia (lịch sự)", type: "Danh từ" },
+                { kanji: "皆さん", hiragana: "みなさん", romaji: "minasan", meaning: "Mọi người, các bạn", type: "Danh từ" },
+                { kanji: "～さん", hiragana: "～さん", romaji: "~san", meaning: "Hậu tố gọi tên lịch sự", type: "Hậu tố" },
+                { kanji: "～ちゃん", hiragana: "～ちゃん", romaji: "~chan", meaning: "Hậu tố gọi thân mật", type: "Hậu tố" },
+                { kanji: "～人", hiragana: "～じん", romaji: "~jin", meaning: "Người nước…", type: "Hậu tố" },
+                { kanji: "先生", hiragana: "せんせい", romaji: "sensei", meaning: "Thầy, cô; giáo viên", type: "Danh từ" },
+                { kanji: "教師", hiragana: "きょうし", romaji: "kyoushi", meaning: "Giáo viên (nghề nghiệp của bản thân)", type: "Danh từ" },
+                { kanji: "学生", hiragana: "がくせい", romaji: "gakusei", meaning: "Học sinh, sinh viên", type: "Danh từ" },
+                { kanji: "会社員", hiragana: "かいしゃいん", romaji: "kaishain", meaning: "Nhân viên công ty", type: "Danh từ" },
+                { kanji: "社員", hiragana: "しゃいん", romaji: "shain", meaning: "Nhân viên công ty", type: "Danh từ" },
+                { kanji: "銀行員", hiragana: "ぎんこういん", romaji: "ginkouin", meaning: "Nhân viên ngân hàng", type: "Danh từ" },
+                { kanji: "医者", hiragana: "いしゃ", romaji: "isha", meaning: "Bác sĩ", type: "Danh từ" },
+                { kanji: "研究者", hiragana: "けんきゅうしゃ", romaji: "kenkyuusha", meaning: "Nhà nghiên cứu", type: "Danh từ" },
+                { kanji: "エンジニア", hiragana: "エンジニア", romaji: "enjinia", meaning: "Kỹ sư", type: "Danh từ" },
+                { kanji: "大学", hiragana: "だいがく", romaji: "daigaku", meaning: "Trường đại học", type: "Danh từ" },
+                { kanji: "病院", hiragana: "びょういん", romaji: "byouin", meaning: "Bệnh viện", type: "Danh từ" },
+                { kanji: "電気", hiragana: "でんき", romaji: "denki", meaning: "Điện", type: "Danh từ" },
+                { kanji: "誰", hiragana: "だれ", romaji: "dare", meaning: "Ai", type: "Đại từ nghi vấn" },
+                { kanji: "どなた", hiragana: "どなた", romaji: "donata", meaning: "Ai (lịch sự)", type: "Đại từ nghi vấn" },
+                { kanji: "～歳", hiragana: "～さい", romaji: "~sai", meaning: "… tuổi", type: "Hậu tố đếm tuổi" },
+                { kanji: "何歳", hiragana: "なんさい", romaji: "nansai", meaning: "Bao nhiêu tuổi", type: "Từ nghi vấn" },
+                { kanji: "おいくつ", hiragana: "おいくつ", romaji: "oikutsu", meaning: "Bao nhiêu tuổi (lịch sự)", type: "Từ nghi vấn" },
+                { kanji: "はい", hiragana: "はい", romaji: "hai", meaning: "Vâng, đúng", type: "Từ đáp" },
+                { kanji: "いいえ", hiragana: "いいえ", romaji: "iie", meaning: "Không", type: "Từ đáp" },
+                { kanji: "初めまして", hiragana: "はじめまして", romaji: "hajimemashite", meaning: "Rất vui được gặp bạn lần đầu", type: "Cụm từ giao tiếp" },
+                { kanji: "どうぞよろしくお願いします", hiragana: "どうぞよろしくおねがいします", romaji: "douzo yoroshiku onegaishimasu", meaning: "Rất mong được giúp đỡ; mong được làm quen", type: "Cụm từ giao tiếp" },
+                { kanji: "こちらは～さんです", hiragana: "こちらは～さんです", romaji: "kochira wa ~san desu", meaning: "Đây là anh/chị…", type: "Cụm từ giao tiếp" },
+                { kanji: "～から来ました", hiragana: "～からきました", romaji: "~kara kimashita", meaning: "Đến từ…", type: "Cụm từ giao tiếp" },
+                { kanji: "アメリカ", hiragana: "アメリカ", romaji: "amerika", meaning: "Mỹ", type: "Danh từ riêng" },
+                { kanji: "イギリス", hiragana: "イギリス", romaji: "igirisu", meaning: "Vương quốc Anh", type: "Danh từ riêng" },
+                { kanji: "インド", hiragana: "インド", romaji: "indo", meaning: "Ấn Độ", type: "Danh từ riêng" },
+                { kanji: "インドネシア", hiragana: "インドネシア", romaji: "indoneshia", meaning: "Indonesia", type: "Danh từ riêng" },
+                { kanji: "韓国", hiragana: "かんこく", romaji: "kankoku", meaning: "Hàn Quốc", type: "Danh từ riêng" },
+                { kanji: "タイ", hiragana: "タイ", romaji: "tai", meaning: "Thái Lan", type: "Danh từ riêng" },
+                { kanji: "中国", hiragana: "ちゅうごく", romaji: "chuugoku", meaning: "Trung Quốc", type: "Danh từ riêng" },
+                { kanji: "ドイツ", hiragana: "ドイツ", romaji: "doitsu", meaning: "Đức", type: "Danh từ riêng" },
+                { kanji: "日本", hiragana: "にほん", romaji: "nihon", meaning: "Nhật Bản", type: "Danh từ riêng" },
+                { kanji: "フランス", hiragana: "フランス", romaji: "furansu", meaning: "Pháp", type: "Danh từ riêng" },
+                { kanji: "ブラジル", hiragana: "ブラジル", romaji: "burajiru", meaning: "Brazil", type: "Danh từ riêng" },
+                { kanji: "ベトナム", hiragana: "ベトナム", romaji: "betonamu", meaning: "Việt Nam", type: "Danh từ riêng" },
+                { kanji: "日本人", hiragana: "にほんじん", romaji: "nihonjin", meaning: "Người Nhật", type: "Danh từ" },
+                { kanji: "ベトナム人", hiragana: "ベトナムじん", romaji: "betonamujin", meaning: "Người Việt Nam", type: "Danh từ" }
             ],
-            21: [
-                { kanji: '思います', hiragana: 'おもいます', romaji: 'omoimasu', meaning: 'Nghĩ', type: 'Động từ' },
-                { kanji: '言います', hiragana: 'いいます', romaji: 'iimasu', meaning: 'Nói', type: 'Động từ' },
-                { kanji: '足ります', hiragana: 'たります', romaji: 'tarimasu', meaning: 'Đủ', type: 'Động từ' }
-            ]
-        };
-        // Điền dữ liệu rỗng cho các bài khác để không bị lỗi
-        for(let i=1; i<=25; i++) { if(!vocabDB[i]) vocabDB[i] = []; }
-
-        // --- CƠ SỞ DỮ LIỆU NGỮ PHÁP (Rút gọn để biểu diễn UI) ---
-        const grammarDB = {
-            1: [
-                {
-                    title: "1. N1 は N2 です",
-                    formula: "Danh từ 1 + は + Danh từ 2 + です",
-                    meaning: "N1 là N2",
-                    usage: "Trợ từ は biểu thị chủ đề của câu. です thể hiện sự khẳng định và lịch sự.",
-                    examples: [
-                        { jp: "私<ruby>は<rt>わたしは</rt></ruby> 学生<ruby>です<rt>がくせいです</rt></ruby>。", vi: "Tôi là học sinh." }
-                    ]
-                }
+            2: [
+                { kanji: "これ", hiragana: "これ", romaji: "kore", meaning: "Cái này, đây (vật ở gần người nói)", type: "Đại từ" },
+                { kanji: "それ", hiragana: "それ", romaji: "sore", meaning: "Cái đó, đó (vật ở gần người nghe)", type: "Đại từ" },
+                { kanji: "あれ", hiragana: "あれ", romaji: "are", meaning: "Cái kia, kia (vật ở xa cả người nói và người nghe)", type: "Đại từ" },
+                { kanji: "この～", hiragana: "この～", romaji: "kono", meaning: "~ này", type: "Từ chỉ định" },
+                { kanji: "その～", hiragana: "その～", romaji: "sono", meaning: "~ đó", type: "Từ chỉ định" },
+                { kanji: "あの～", hiragana: "あの～", romaji: "ano", meaning: "~ kia", type: "Từ chỉ định" },
+                { kanji: "本", hiragana: "ほん", romaji: "hon", meaning: "Sách", type: "Danh từ" },
+                { kanji: "辞書", hiragana: "じしょ", romaji: "jisho", meaning: "Từ điển", type: "Danh từ" },
+                { kanji: "雑誌", hiragana: "ざっし", romaji: "zasshi", meaning: "Tạp chí", type: "Danh từ" },
+                { kanji: "新聞", hiragana: "しんぶん", romaji: "shinbun", meaning: "Báo", type: "Danh từ" },
+                { kanji: "ノート", hiragana: "ノート", romaji: "nooto", meaning: "Vở", type: "Danh từ" },
+                { kanji: "手帳", hiragana: "てちょう", romaji: "techou", meaning: "Sổ tay", type: "Danh từ" },
+                { kanji: "名刺", hiragana: "めいし", romaji: "meishi", meaning: "Danh thiếp", type: "Danh từ" },
+                { kanji: "カード", hiragana: "カード", romaji: "kaado", meaning: "Thẻ, cạc", type: "Danh từ" },
+                { kanji: "テレホンカード", hiragana: "テレホンカード", romaji: "terehon kaado", meaning: "Thẻ điện thoại", type: "Danh từ" },
+                { kanji: "鉛筆", hiragana: "えんぴつ", romaji: "enpitsu", meaning: "Bút chì", type: "Danh từ" },
+                { kanji: "ボールペン", hiragana: "ボールペン", romaji: "boorupen", meaning: "Bút bi", type: "Danh từ" },
+                { kanji: "シャープペンシル", hiragana: "シャープペンシル", romaji: "shaapupenshiru", meaning: "Bút chì kim, bút chì bấm", type: "Danh từ" },
+                { kanji: "鍵", hiragana: "かぎ", romaji: "kagi", meaning: "Chìa khóa", type: "Danh từ" },
+                { kanji: "時計", hiragana: "とけい", romaji: "tokei", meaning: "Đồng hồ", type: "Danh từ" },
+                { kanji: "傘", hiragana: "かさ", romaji: "kasa", meaning: "Ô, dù", type: "Danh từ" },
+                { kanji: "鞄", hiragana: "かばん", romaji: "kaban", meaning: "Cặp sách, túi sách", type: "Danh từ" },
+                { kanji: "カセットテープ", hiragana: "カセットテープ", romaji: "kasetto teepu", meaning: "Băng cát-xét", type: "Danh từ" },
+                { kanji: "テープレコーダー", hiragana: "テープレコーダー", romaji: "teepu rekoodaa", meaning: "Máy ghi âm", type: "Danh từ" },
+                { kanji: "テレビ", hiragana: "テレビ", romaji: "terebi", meaning: "Ti vi", type: "Danh từ" },
+                { kanji: "ラジオ", hiragana: "ラジオ", romaji: "rajio", meaning: "Radio", type: "Danh từ" },
+                { kanji: "カメラ", hiragana: "カメラ", romaji: "kamera", meaning: "Máy ảnh", type: "Danh từ" },
+                { kanji: "コンピューター", hiragana: "コンピューター", romaji: "konpyuutaa", meaning: "Máy vi tính", type: "Danh từ" },
+                { kanji: "自動車", hiragana: "じどうしゃ", romaji: "jidousha", meaning: "Ô tô, xe hơi", type: "Danh từ" }
             ],
-            21: [
-                {
-                    title: "1. ～と思います",
-                    formula: "Thể thông thường + と思います",
-                    meaning: "Tôi nghĩ rằng ~",
-                    usage: "Dùng để bày tỏ ý kiến, phỏng đoán của người nói.",
-                    examples: [
-                        { jp: "明日<ruby>雨<rt>あめ</rt></ruby>が<ruby>降る<rt>ふる</rt></ruby>と<ruby>思います<rt>おもいます</rt></ruby>。", vi: "Tôi nghĩ ngày mai trời sẽ mưa." }
-                    ]
-                }
-            ]
-        };
-        for(let i=1; i<=25; i++) { if(!grammarDB[i]) grammarDB[i] = []; }
-
-        let isMeaningHidden = false;
-
-        // --- TỪ VỰNG LOGIC ---
-        function toggleVocabN5() {
-            const content = document.getElementById('vocab-n5-content');
-            const icon = document.getElementById('vocab-n5-icon');
-            const container = document.getElementById('vocab-lessons-container');
-            
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.style.transform = 'rotate(180deg)';
-                
-                // Render if empty
-                if (container.children.length === 0) {
-                    renderAllVocabLessons();
-                }
-            } else {
-                content.classList.add('hidden');
-                icon.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        function renderAllVocabLessons() {
-            const container = document.getElementById('vocab-lessons-container');
-            let html = '';
-            for(let i = 1; i <= 25; i++) {
-                html += `
-                <div class="vocab-lesson-item bg-white border border-gray-200 rounded-xl overflow-hidden mb-4 shadow-sm" data-lesson="${i}">
-                    <button class="w-full px-5 py-4 flex items-center justify-between bg-white hover:bg-gray-50 transition-all" onclick="toggleVocabLesson(this)">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-bold">${i}</span>
-                            <span class="font-bold text-gray-800">Bài ${i}</span>
-                        </div>
-                        <i class="fas fa-plus text-gray-400 transition-transform duration-300"></i>
-                    </button>
-                    <div class="lesson-content hidden border-t border-gray-100 p-0">
-                        ${generateVocabTableHTML(i)}
-                    </div>
-                </div>`;
-            }
-            container.innerHTML = html;
-        }
-
-        function generateVocabTableHTML(lessonNum) {
-            const data = vocabDB[lessonNum];
-            if(!data || data.length === 0) {
-                return `<div class="p-6 text-center text-gray-400 italic">Dữ liệu bài ${lessonNum} đang cập nhật...</div>`;
-            }
-            let rows = data.map(v => `
-                <tr class="vocab-row border-b border-gray-50 hover:bg-indigo-50/30 transition-colors">
-                    <td class="py-3 px-4 font-jp text-lg font-medium text-gray-900">${v.kanji || '-'}</td>
-                    <td class="py-3 px-4 font-jp text-gray-600">${v.hiragana}</td>
-                    <td class="py-3 px-4 text-gray-500 text-sm hidden md:table-cell">${v.romaji}</td>
-                    <td class="py-3 px-4 text-gray-800 meaning-col"><span class="meaning-text">${v.meaning}</span></td>
-                </tr>
-            `).join('');
-
-            return `
-                <div class="overflow-x-auto ${isMeaningHidden ? 'hide-meaning' : ''}">
-                    <table class="w-full text-left border-collapse min-w-[500px]">
-                        <thead class="bg-gray-50/50">
-                            <tr class="text-gray-400 uppercase text-xs tracking-wider">
-                                <th class="py-3 px-4 font-medium">Kanji</th>
-                                <th class="py-3 px-4 font-medium">Hiragana</th>
-                                <th class="py-3 px-4 font-medium hidden md:table-cell">Romaji</th>
-                                <th class="py-3 px-4 font-medium">Ý nghĩa</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white">${rows}</tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function toggleVocabLesson(btn) {
-            const content = btn.nextElementSibling;
-            const icon = btn.querySelector('i');
-            content.classList.toggle('hidden');
-            if(content.classList.contains('hidden')) {
-                icon.classList.remove('fa-minus', 'text-indigo-500');
-                icon.classList.add('fa-plus', 'text-gray-400');
-            } else {
-                icon.classList.remove('fa-plus', 'text-gray-400');
-                icon.classList.add('fa-minus', 'text-indigo-500');
-            }
-        }
-
-        function filterVocab() {
-            const query = document.getElementById('vocab-search').value.toLowerCase();
-            const rows = document.querySelectorAll('.vocab-row');
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-
-        function toggleMeaning() {
-            isMeaningHidden = !isMeaningHidden;
-            const btn = document.getElementById('toggle-meaning-btn');
-            const tables = document.querySelectorAll('#vocab-lessons-container .overflow-x-auto');
-            
-            if(isMeaningHidden) {
-                btn.innerHTML = '<i class="fas fa-eye mr-2"></i> Hiện nghĩa tiếng Việt';
-                btn.classList.add('bg-pink-100', 'text-pink-600');
-                btn.classList.remove('bg-indigo-50', 'text-indigo-600');
-                tables.forEach(t => t.classList.add('hide-meaning'));
-            } else {
-                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i> Ẩn nghĩa tiếng Việt';
-                btn.classList.remove('bg-pink-100', 'text-pink-600');
-                btn.classList.add('bg-indigo-50', 'text-indigo-600');
-                tables.forEach(t => t.classList.remove('hide-meaning'));
-            }
-        }
-
-        // --- NGỮ PHÁP LOGIC ---
-        function toggleGrammarN5() {
-            const content = document.getElementById('grammar-n5-content');
-            const icon = document.getElementById('grammar-n5-icon');
-            const sidebar = document.getElementById('grammar-sidebar');
-            
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.style.transform = 'rotate(180deg)';
-                
-                if (sidebar.children.length === 0) {
-                    let html = '';
-                    for(let i=1; i<=25; i++) {
-                        html += `
-                        <button onclick="loadGrammarLesson(${i})" id="gram-btn-${i}" class="text-left px-4 py-3 rounded-xl hover:bg-pink-50 transition-colors flex items-center justify-between whitespace-nowrap md:whitespace-normal group border border-transparent">
-                            <span class="font-medium text-gray-700 group-hover:text-pink-600 transition-colors">Bài ${i}</span>
-                            <i class="fas fa-chevron-right text-xs text-gray-300 opacity-0 group-hover:opacity-100 hidden md:block"></i>
-                        </button>`;
-                    }
-                    sidebar.innerHTML = html;
-                }
-            } else {
-                content.classList.add('hidden');
-                icon.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        function loadGrammarLesson(lessonNum) {
-            // Update active state in sidebar
-            document.querySelectorAll('#grammar-sidebar button').forEach(b => {
-                b.classList.remove('bg-white', 'border-pink-100', 'shadow-sm', 'text-pink-600');
-                b.classList.add('text-gray-700');
-            });
-            const activeBtn = document.getElementById(`gram-btn-${lessonNum}`);
-            if(activeBtn) {
-                activeBtn.classList.add('bg-white', 'border-pink-100', 'shadow-sm', 'text-pink-600');
-                activeBtn.classList.remove('text-gray-700');
-            }
-
-            const container = document.getElementById('grammar-detail-content');
-            const data = grammarDB[lessonNum];
-            
-            if(!data || data.length === 0) {
-                container.innerHTML = `
-                    <div class="h-full flex flex-col items-center justify-center text-gray-400 py-20">
-                        <i class="fas fa-tools text-5xl mb-4 text-gray-200"></i>
-                        <h3 class="text-xl font-bold text-gray-600 mb-2">Bài ${lessonNum}</h3>
-                        <p>Nội dung đang được biên soạn và sẽ sớm ra mắt.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = `
-                <div class="flex justify-between items-end mb-8 border-b border-gray-100 pb-4">
-                    <div>
-                        <span class="text-pink-500 font-bold tracking-wider text-sm uppercase">Minna no Nihongo</span>
-                        <h3 class="text-3xl font-bold text-indigo-950 mt-1">Ngữ pháp Bài ${lessonNum}</h3>
-                    </div>
-                </div>
-            `;
-
-            html += data.map(grammar => `
-                <div class="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 mb-6 shadow-sm hover:shadow-md transition-shadow">
-                    <h4 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-3">
-                        <span class="w-2 h-6 bg-pink-500 rounded-full inline-block"></span>
-                        ${grammar.title}
-                    </h4>
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5 font-mono text-center text-lg text-indigo-800 font-semibold shadow-inner">
-                        ${grammar.formula}
-                    </div>
-                    <div class="space-y-3 mb-6">
-                        <p><span class="font-bold text-gray-700 w-24 inline-block bg-gray-100 px-2 py-1 rounded text-sm text-center mr-2">Ý nghĩa</span> ${grammar.meaning}</p>
-                        <p class="text-gray-600 leading-relaxed"><span class="font-bold text-gray-700 w-24 inline-block bg-gray-100 px-2 py-1 rounded text-sm text-center mr-2">Cách dùng</span> ${grammar.usage}</p>
-                    </div>
-                    
-                    <div class="bg-indigo-50/50 rounded-xl p-5 border border-indigo-100">
-                        <p class="font-bold text-indigo-900 mb-4 text-sm uppercase tracking-wide flex items-center gap-2"><i class="fas fa-lightbulb text-yellow-500"></i> Ví dụ minh họa</p>
-                        <div class="space-y-4">
-                            ${grammar.examples.map(ex => `
-                                <div class="bg-white p-4 rounded-lg shadow-sm border border-white">
-                                    <p class="font-jp text-xl text-gray-900 mb-1">${ex.jp}</p>
-                                    <p class="text-gray-500 text-sm">👉 ${ex.vi}</p>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            container.innerHTML = html;
-        }
-    </script>
-</body>
-</html>
+            3: [
+                { kanji: "ここ", hiragana: "ここ", romaji: "koko", meaning: "Chỗ này, đây", type: "Đại từ chỉ địa điểm" },
+                { kanji: "そこ", hiragana: "そこ", romaji: "soko", meaning: "Chỗ đó, đó", type: "Đại từ chỉ địa điểm" },
+                { kanji: "あそこ", hiragana: "あそこ", romaji: "asoko", meaning: "Chỗ kia, kia", type: "Đại từ chỉ địa điểm" },
+                { kanji: "どこ", hiragana: "どこ", romaji: "doko", meaning: "Chỗ nào, đâu", type: "Đại từ nghi vấn" },
+                { kanji: "こちら", hiragana: "こちら", romaji: "kochira", meaning: "Phía này, đằng này, chỗ này (lịch sự)", type: "Đại từ chỉ địa điểm" },
+                { kanji: "そちら", hiragana: "そちら", romaji: "sochira", meaning: "Phía đó, đằng đó, chỗ đó (lịch sự)", type: "Đại từ chỉ địa điểm" },
+                { kanji: "あちら", hiragana: "あちら", romaji: "achira", meaning: "Phía kia, đằng kia, chỗ kia (lịch sự)", type: "Đại từ chỉ địa điểm" },
+                { kanji: "どちら", hiragana: "どちら", romaji: "dochira", meaning: "Phía nào, đằng nào, chỗ nào (lịch sự)", type: "Đại từ nghi vấn" },
+                { kanji: "教室", hiragana: "きょうしつ", romaji: "kyoushitsu", meaning: "Lớp học, phòng học", type: "Danh từ" },
+                { kanji: "食堂
